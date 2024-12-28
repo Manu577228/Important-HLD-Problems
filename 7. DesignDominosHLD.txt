@@ -1,0 +1,173 @@
+Design Dominos ::
+
+/* -------------------------------------------------------- */
+/*   ( The Authentic JS CodeBuff )
+ ___ _                      _              _ 
+ | _ ) |_  __ _ _ _ __ _ __| |_ __ ____ _ (_)
+ | _ \ ' \/ _` | '_/ _` / _` \ V  V / _` || |
+ |___/_||_\__,_|_| \__,_\__,_|\_/\_/\__,_|/ |
+                                        |__/ 
+ */
+/* ---------------------------------------------------------   */
+/*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
+/*    Github : https://github.com/Manu577228                  */
+/* ----------------------------------------------------------- */
+
+1. Functional Requirements
+
+*) User Registration and Authentication:
+Users should be able to sign up using their phone number or email address and log in to their account.
+
+*) Menu Management:
+Display a dynamic menu with various pizza options, toppings, and drink selections. Users should be able to customize their pizza with different toppings.
+
+*) Order Placement:
+Users should be able to place an order by selecting items from the menu, specifying delivery details, and making payment.
+
+*) Payment Integration:
+Secure payment options should be available (e.g., credit card, debit card, wallets).
+
+*) Order Tracking:
+Real-time tracking of order status from preparation to delivery.
+
+*) Delivery Management:
+Assign delivery drivers based on proximity and availability.
+
+*) Promo Codes and Discounts:
+Users should be able to apply promo codes or discounts to their orders.
+
+*) Ratings and Reviews:
+Users should be able to rate and review pizzas, the service, and the overall experience.
+
+2. Non-Functional Requirements
+
+*) Scalability:
+The system must handle traffic spikes during peak hours (e.g., weekends, holidays). Horizontal scaling should be considered for databases and services.
+
+*) Low Latency:
+Users should experience minimal delays when navigating the menu, placing orders, or tracking deliveries.
+
+*) High Availability:
+Ensure 99.99% uptime, particularly for the ordering and payment systems.
+
+*) Security:
+Secure user information, payment details, and order history using encryption and secure payment protocols.
+
+*) Data Integrity:
+Ensure data consistency and prevent errors in order status updates, payments, and inventory management.
+
+*) Global Availability:
+Support operations in different regions with localized pricing and menu items.
+
+3. Consistency / Availability
+
+*) Consistency > Availability:
+Focus on consistency for payment transactions, ensuring that users are not charged multiple times, while using eventual consistency for order tracking and delivery.
+
+4. APIs
+
+*) User APIs:
+1) /register: User registration with phone number/email.
+2) /login: User authentication.
+3) /profile: Get and update user profile details.
+
+*) Menu and Order APIs:
+1) /getMenu: Fetch available menu items.
+2) /placeOrder: Place a new order.
+3) /updateOrder: Modify an existing order (e.g., add/remove toppings).
+4) /trackOrder: Retrieve current order status.
+
+*) Payment APIs:
+1) /processPayment: Process the payment for an order.
+2) /applyPromoCode: Apply a promo code to an order.
+
+*) Delivery APIs:
+1) /assignDelivery: Assign a delivery driver to an order.
+2) /getDeliveryStatus: Get real-time updates on delivery progress.
+
+*) Review APIs:
+/submitReview: Submit a review for the pizza or delivery service.
+
+5. Architecture
+
+*) Microservices-Based Architecture:
+Different microservices for user management, order management, payment processing, delivery management, and reviews.
+
+*) Load Balancer:
+A load balancer to distribute traffic across servers for high availability.
+
+*) Event-Driven Communication:
+Use message queues (e.g., RabbitMQ or Kafka) to handle events like order placement, payment processing, and delivery tracking in real-time.
+
+*) Payment Gateway Integration:
+Integrate third-party payment processors like Stripe or PayPal for handling transactions securely.
+
+6. Data Flow
+
+*) User Interaction:
+A user logs in, views the menu, places an order, and proceeds to payment.
+Order Flow:
+When the user places an order, the system stores order details, processes payment, and assigns a delivery driver.
+
+*) Payment Flow:
+The payment system interacts with a third-party gateway to process payments, ensuring a secure transaction.
+
+*) Order Tracking Flow:
+The order status is updated in real-time, and the user can track progress until delivery is completed.
+
+*) Delivery Flow:
+The delivery system assigns the nearest available driver, and real-time delivery status is updated until the order is delivered.
+
+7. Kind of Data Store
+
+*) Relational Database (e.g., PostgreSQL):
+Store user data, order details, payment records, reviews, and menu information.
+
+*) NoSQL Database (e.g., MongoDB):
+Use for storing order tracking data, real-time data like status updates, and other dynamic content.
+
+*) Blob Storage (e.g., Amazon S3):
+Store promotional images, logos, and other media assets.
+
+8. Scaling of DB
+
+*) Horizontal Scaling:
+Use sharding to distribute user data and orders across multiple database nodes.
+
+*) Replication:
+Implement master-slave replication for high availability and fault tolerance.
+
+*) Partitioning:
+Partition order data by region to reduce load and improve performance.
+
+9. Caching & Sharding
+
+*) Caching:
+Use Redis or Memcached to cache frequently accessed data like the menu, popular pizzas, and user sessions.
+
+*) Sharding:
+Shard the order database by user region or order ID to distribute the data across multiple nodes and reduce latency.
+
+10. Failure & Fault Tolerance
+
+*) Data Replication:
+Replicate order data across multiple servers to prevent data loss in case of server failure.
+
+*) Retry Mechanisms:
+Automatically retry failed requests, especially in case of payment processing errors.
+
+*) Graceful Degradation:
+Disable non-critical features (like reviews) during system failures to maintain core functionalities (order placing, payment).
+
+*) Fallback Strategies:
+Use fallback APIs and redundant systems to ensure uninterrupted service during failures.
+
+11. Logging & Security
+
+*) Logging:
+Use centralized logging services (e.g., ELK Stack) for real-time monitoring and issue resolution.
+
+*) Security:
+1) Encrypt sensitive data, especially payment details, using HTTPS/TLS.
+2) Implement secure authentication and authorization using OAuth2.0 and JWT tokens.
+3) Regularly audit the system for security vulnerabilities and conduct penetration testing.

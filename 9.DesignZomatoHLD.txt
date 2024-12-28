@@ -1,0 +1,150 @@
+Design Zomato ::
+
+/* -------------------------------------------------------- */
+/*   ( The Authentic JS CodeBuff )
+ ___ _                      _              _ 
+ | _ ) |_  __ _ _ _ __ _ __| |_ __ ____ _ (_)
+ | _ \ ' \/ _` | '_/ _` / _` \ V  V / _` || |
+ |___/_||_\__,_|_| \__,_\__,_|\_/\_/\__,_|/ |
+                                        |__/ 
+ */
+/* ---------------------------------------------------------   */
+/*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
+/*    Github : https://github.com/Manu577228                  */
+/* ----------------------------------------------------------- */
+
+1. Functional Requirements
+
+*) User Registration and Authentication: Users should be able to register using their phone number or email and log in to their accounts.
+
+*) Restaurant Search: Users should be able to search for restaurants based on location, cuisine, and ratings.
+
+*) Restaurant Menu: Each restaurant should have a dynamic menu with details about available dishes, prices, and nutritional information.
+
+*) Order Placement: Users can select multiple dishes from the restaurant's menu, place the order, and provide delivery or pickup details.
+
+*) Payment Integration: Secure payment methods (e.g., credit cards, wallets, cash on delivery) should be available to process the order payment.
+
+*) Reviews and Ratings: Users should be able to leave reviews and rate restaurants and their dishes.
+
+*) Order Tracking: Real-time tracking of order status from kitchen preparation to delivery.
+
+*) Delivery Management: Assign delivery drivers based on proximity, availability, and load balancing.
+
+*) Discounts and Promotions: Users should be able to apply promo codes and get discounts on their orders.
+
+2. Non-Functional Requirements
+
+*) Scalability: The system must support high volumes of concurrent users and requests, especially during peak meal times.
+
+*) Low Latency: Ensure fast response times for searching restaurants, placing orders, and tracking deliveries.
+
+*) High Availability: The system should be available 24/7 with 99.99% uptime, ensuring seamless food ordering at all times.
+
+*) Security: User information, payment details, and order history should be encrypted to prevent unauthorized access.
+
+*) Data Integrity: Ensure consistency in order status, payments, and inventory details, preventing any mismatches or errors.
+
+*) Global Availability: Support for multiple countries with localized menus, currencies, and delivery options.
+
+3. Consistency / Availability
+
+*) Consistency > Availability: Prioritize consistency in transactions, ensuring reliable order placement and payment processes. Use eventual consistency for less critical features like order tracking and ratings.
+
+4. APIs
+
+*) User APIs:
+1) /register: User registration using phone number or email.
+2) /login: User authentication with phone/email.
+3) /updateProfile: Update user profile information (address, contact).
+4) /userOrders: Get the list of user’s past orders.
+
+*) Restaurant and Menu APIs:
+1) /searchRestaurant: Search restaurants by location, cuisine, and ratings.
+2) /getRestaurantMenu: Fetch restaurant's menu with details of dishes and prices.
+3) /getRestaurantDetails: Get details of a specific restaurant (location, working hours, reviews).
+
+*) Order APIs:
+1) /placeOrder: Place a new order from a restaurant.
+2) /updateOrder: Modify an order (add/remove items).
+3) /trackOrder: Track the real-time status of an order.
+
+*) Payment APIs:
+1) /processPayment: Process the payment securely through various methods (card, wallet).
+2) /applyPromoCode: Apply promo codes to get discounts.
+
+*) Review APIs:
+1) /submitReview: Submit a review for a restaurant or dish.
+2) /getReviews: Fetch reviews for a specific restaurant or dish.
+
+*) Delivery APIs:
+/assignDelivery: Assign a delivery driver to an order.
+/getDeliveryStatus: Get real-time updates on order delivery progress.
+
+5. Architecture
+
+*) Microservices-Based Architecture: The system should be designed using microservices to handle user management, order management, restaurant management, reviews, and payment processing.
+
+*) Load Balancer: A load balancer should distribute traffic across multiple servers for increased availability.
+
+*) Event-Driven Architecture: Use message queues (e.g., Kafka or RabbitMQ) to handle asynchronous events like order placement, payment processing, and delivery assignment.
+
+*) Payment Gateway Integration: Third-party payment services like Stripe or Razorpay should be integrated for secure payment processing.
+
+6.Data Flow
+
+*) User Interaction: The user logs in, searches for restaurants, selects dishes from a menu, and places an order.
+
+*) Order Flow: After the user places an order, the system stores order details, processes payment, and assigns a delivery driver. Users can track their order in real-time.
+
+*) Payment Flow: The payment system interacts with third-party payment processors (e.g., Stripe) to securely process payments for orders.
+
+*) Order Tracking Flow: The order's status is updated in real-time, allowing users to track the order from preparation to delivery.
+
+*) Delivery Flow: Once the order is ready, the system assigns a nearby delivery driver. The delivery status is updated as the driver moves toward the delivery destination.
+
+7.Data Stores
+
+*) Relational Database (e.g., PostgreSQL): Store structured data, including user profiles, order details, restaurant menus, and reviews.
+
+*) NoSQL Database (e.g., MongoDB): Store real-time data, such as order tracking information and other dynamic content.
+
+*) Blob Storage (e.g., Amazon S3): Store promotional images, restaurant logos, and other media assets.
+
+8. Scaling of DB
+
+*) Horizontal Scaling: Distribute user, restaurant, and order data across multiple database nodes using sharding.
+
+*) Replication: Use master-slave replication to ensure high availability and data fault tolerance.
+
+*) Partitioning: Partition user and order data based on geographical regions or user IDs to improve performance.
+
+9.Caching & Sharding
+
+*) Caching: Use Redis or Memcached for caching frequently accessed data, such as popular restaurant menus, user sessions, and restaurant details.
+
+*) Sharding: Implement sharding to divide order data by region or order IDs to optimize database performance.
+
+10. Failure & Fault Tolerance
+
+*) Data Replication: Replicate all essential data (orders, user profiles, reviews) to avoid data loss in the event of server failure.
+
+*) Retry Mechanisms: Ensure automatic retries for failed operations, especially during payment processing.
+
+*) Graceful Degradation: Non-critical features like reviews or menus should be disabled during failures to prioritize core functionalities (order placement, payment, delivery).
+
+*) Fallback Mechanisms: Implement fallback strategies using secondary servers or APIs to ensure uninterrupted service.
+
+11. Logging & Security
+
+*) Logging: Implement centralized logging for all events (user actions, orders, payments, etc.) using tools like ELK Stack or CloudWatch.
+
+*) Security:
+1) Encrypt sensitive user and payment data using HTTPS/TLS.
+2) Implement secure user authentication with JWT tokens and OAuth 2.0.
+3) Periodically audit the system for vulnerabilities and ensure PCI-DSS compliance for payment handling.
+
+12. System Monitoring
+
+*) Monitoring Tools: Use monitoring tools like Prometheus or New Relic to track application performance, identify bottlenecks, and alert administrators in case of failures.
+*) Alerts: Set up real-time alerts for critical system failures, high traffic spikes, or unusual payment behavior.

@@ -1,0 +1,161 @@
+2. Design Uber Backend ::
+
+/* -------------------------------------------------------- */
+/*   ( The Authentic JS CodeBuff )
+ ___ _                      _              _ 
+ | _ ) |_  __ _ _ _ __ _ __| |_ __ ____ _ (_)
+ | _ \ ' \/ _` | '_/ _` / _` \ V  V / _` || |
+ |___/_||_\__,_|_| \__,_\__,_|\_/\_/\__,_|/ |
+                                        |__/ 
+ */
+/* ---------------------------------------------------------   */
+/*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
+/*    Github : https://github.com/Manu577228                  */
+/* ----------------------------------------------------------- */
+
+1. Functional Requirements
+
+*) User Registration and Authentication:
+Users and drivers must register with their credentials (e.g., phone number, email) and authenticate during login.
+
+*) Real-Time Ride Booking:
+Users can request a ride by providing pick-up and drop-off locations.
+
+*) Driver Matching:
+Match riders with the nearest available driver based on location and availability.
+
+*) Live Tracking:
+Enable users to track their driver’s real-time location during the ride.
+
+*) Pricing and Payment:
+Dynamically calculate fares based on distance, time, and surge pricing, and process payments.
+
+*) Ratings and Feedback:
+Allow users and drivers to review and rate each other after a trip.
+
+*) Trip History:
+Maintain logs of completed trips for both users and drivers.
+
+2. Non-Functional Requirements
+
+*) Scalability:
+Support millions of ride requests and GPS updates globally.
+
+*) Low Latency:
+Ensure minimal delays in matching drivers and updating locations.
+
+*) High Availability:
+Maintain 99.99% uptime with global coverage and redundancy.
+
+*) Security:
+Use encryption for sensitive data and secure communication channels.
+
+*) Data Durability:
+Ensure no data loss during failures through robust backup systems.
+
+*) Reliability:
+Guarantee successful processing of ride requests under high load.
+
+*) User Experience:
+Provide a seamless, responsive interface with real-time updates.
+
+3. Consistency / Availability
+
+*) Availability > Consistency:
+Prioritize high availability while maintaining eventual consistency for ride updates and notifications.
+
+4. APIs
+
+*) User APIs:
+1) /register: Register a user or driver with details.
+2) /login: Authenticate user or driver credentials.
+
+*) Ride APIs:
+
+1) /bookRide: Submit a ride request.
+2) /getRideStatus: Retrieve the status of an ongoing ride.
+3) /completeRide: Mark a ride as completed.
+
+*) Payment APIs:
+
+1) /calculateFare: Calculate estimated fare.
+2) /processPayment: Handle ride payment transactions.
+
+*) Driver APIs:
+
+1) /updateLocation: Update driver’s current GPS coordinates.
+2) /setAvailability: Update driver’s availability status.
+
+5. Architecture
+
+*) Microservices Architecture:
+Separate services for user management, ride-matching, location tracking, payments, and notifications.
+
+*) Load Balancer:
+Distribute incoming requests among servers.
+
+*) Event-Driven Communication:
+Use Kafka or RabbitMQ for real-time updates like ride status and GPS locations.
+
+6. Data Flow
+
+*) Ride Booking:
+1) User sends a ride request.
+2) Backend matches the user with the nearest available driver.
+3) Notifications are sent to both the user and driver.
+
+*) Ride Tracking:
+GPS data from the driver is continuously updated and sent to the user.
+
+*) Payment Processing:
+
+Fare is calculated upon ride completion, and payment is processed.
+
+7. Kind of Data Store
+
+*) Relational Database (e.g., MySQL/PostgreSQL):
+For user profiles, ride history, and payment transactions.
+
+*) NoSQL Database (e.g., MongoDB/Cassandra):
+For real-time ride data and driver availability.
+
+*) Spatial Database (e.g., PostGIS):
+For location-based queries like finding nearby drivers.
+
+8. Scaling of DB
+
+*) Horizontal Scaling:
+Partition data based on geographic regions (e.g., city or country).
+
+*) Replication:
+Use master-slave replication for data redundancy and faster reads.
+
+9. Caching & Sharding
+
+*) Caching:
+Use Redis or Memcached for frequently accessed data like user sessions and nearby drivers.
+
+*) Sharding:
+Shard databases based on user or ride IDs to balance the load.
+
+
+10. Failure & Fault Tolerance
+
+*) Replication:
+Replicate data across multiple servers to prevent data loss.
+
+*) Fallback Mechanism:
+Retry failed requests using exponential backoff.
+
+*) Circuit Breakers:
+Isolate failing services to prevent cascading failures.
+
+11. Logging & Security
+
+*) Logging:
+Use tools like ELK Stack for centralized logging and monitoring.
+
+*) Security:
+1) Encrypt all sensitive data at rest and in transit.
+2) Use HTTPS and OAuth2 for secure communication and authentication.
+3) Conduct regular vulnerability assessments and penetration tests.

@@ -1,0 +1,151 @@
+Design Dream11 ::
+
+/* -------------------------------------------------------- */
+/*   ( The Authentic JS CodeBuff )
+ ___ _                      _              _ 
+ | _ ) |_  __ _ _ _ __ _ __| |_ __ ____ _ (_)
+ | _ \ ' \/ _` | '_/ _` / _` \ V  V / _` || |
+ |___/_||_\__,_|_| \__,_\__,_|\_/\_/\__,_|/ |
+                                        |__/ 
+ */
+/* ---------------------------------------------------------   */
+/*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
+/*    Github : https://github.com/Manu577228                  */
+/* ----------------------------------------------------------- */
+
+1. Functional Requirements
+
+*) User Authentication and Profile:
+Users must register/login to create and manage their fantasy team profiles.
+
+*) Create and Join Contests:
+Users can create custom contests or join pre-existing ones.
+
+*) Team Formation:
+Allow users to create fantasy teams by selecting players under a virtual budget.
+
+*) Live Match Updates:
+Provide real-time updates on player performances and match scores.
+
+*) Leaderboard and Rankings:
+Display rankings based on fantasy team performance in contests.
+
+*) Prize Distribution:
+Automate the calculation and distribution of prizes to winners after the contest ends.
+
+2. Non-Functional Requirements
+
+*) Scalability:
+Handle millions of concurrent users, especially during popular matches.
+
+*) Low Latency:
+Provide real-time updates with minimal delay.
+
+*) High Availability:
+Ensure the platform is operational during critical match timings.
+
+*) Security:
+Safeguard user data and transactions using encryption and secure payment gateways.
+
+*) Data Accuracy:
+Ensure real-time data integrity for match updates and fantasy points calculation.
+
+*) Compliance:
+Adhere to legal and regulatory requirements for skill-based gaming in different regions.
+
+3. Consistency / Availability
+
+*) Availability > Consistency:
+Ensure availability during high traffic events with eventual consistency for real-time updates and rankings.
+
+4. APIs
+
+*) User APIs:
+1) /register: Register a new user.
+2) /login: Authenticate users.
+
+*) Contest APIs:
+1) /createContest: Create a new contest.
+2) /joinContest: Join an existing contest.
+
+*) Team APIs:
+
+1) /createTeam: Create a fantasy team.
+2) /editTeam: Edit an existing team.
+
+*) Live Update APIs:
+1) /getLiveScores: Fetch real-time player and match stats.
+2) /getLeaderboard: Fetch live contest rankings.
+
+5. Architecture
+
+*) Microservices Architecture:
+Separate services for user management, contests, scoring, and payments.
+
+*) Event-Driven Architecture:
+Use message queues (e.g., Kafka) for handling live updates and scoring asynchronously.
+
+*) Load Balancer:
+Distribute incoming requests across multiple servers.
+
+6. Data Flow
+
+*) User Interaction:
+Users log in and access contests or create fantasy teams.
+
+*) Match Updates:
+Real-time match data is ingested from third-party providers and processed by the scoring service.
+
+*) Leaderboards and Rankings:
+User scores are updated in near real-time and rankings are recalculated.
+
+*) Prize Distribution:
+After the contest ends, calculate winners and process prize payouts.
+
+7. Kind of Data Store
+
+*) Relational Database (e.g., MySQL/PostgreSQL):
+Store user profiles, contest details, and transactions.
+
+*) NoSQL Database (e.g., MongoDB/DynamoDB):
+Store live match stats and scoring data for quick access.
+
+*) Blob Storage (e.g., Amazon S3):
+Store player images, contest banners, and other media.
+
+8. Scaling of DB
+
+*) Horizontal Scaling:
+Partition contests or teams by contest ID or user ID to distribute the load.
+
+*) Replication:
+Use read replicas to handle high query traffic for leaderboard and stats access.
+
+9. Caching & Sharding
+
+*) Caching:
+Use Redis or Memcached to cache frequently accessed data like live scores and rankings.
+
+*) Sharding:
+Use shard keys like contest IDs or user IDs to distribute data across database nodes.
+
+10. Failure & Fault Tolerance
+
+*) Replication:
+Ensure data replication across multiple nodes to avoid single points of failure.
+
+*) Fallback Mechanisms:
+Serve cached scores and rankings during database outages.
+
+*) Circuit Breakers:
+Prevent cascading failures in microservices during high traffic.
+
+11. Logging & Security
+
+*) Logging:
+Use centralized logging systems like ELK Stack for debugging and monitoring.
+
+*) Security:
+1) Encrypt sensitive user data at rest and in transit.
+2) Secure APIs with OAuth2.0 and HTTPS.
+3) Use fraud detection systems to monitor contest abuse or cheating.
