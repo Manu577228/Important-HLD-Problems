@@ -1,5 +1,6 @@
-Design WhatsApp :: 
+![WhatsApp HLD](https://i.postimg.cc/85tM7HBz/Whats-App-HLD.png)
 
+```text
 /* -------------------------------------------------------- */
 /*   ( The Authentic JS CodeBuff )
  ____                       _              _ 
@@ -12,92 +13,561 @@ Design WhatsApp ::
 /*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
 /*    Github : https://github.com/Manu577228                  */
 /* ----------------------------------------------------------- */
+```
 
-1. Functional Requirements
+# Design WhatsApp
 
-*) User Registration and Authentication: Users must be able to register using a phone number and log in.
-*) Real-Time Messaging: Allow one-on-one and group text messaging with message delivery status (sent, delivered, read).
-*) Multimedia Sharing: Users should share images, videos, documents, and voice notes.
-*) Push Notifications: Notify users of new messages when the app is in the background.
-*) Group Management: Create, join, or leave groups with a limit on participants.
-*) Encryption: End-to-end encryption for all messages and calls.
-*) Voice and Video Calls: Peer-to-peer voice and video calling.
+## 1. Functional Requirements
 
-2. Non-Functional Requirements
+- **User Registration and Authentication:** Users must be able to register using a phone number and log in.
+- **Real-Time Messaging:** Allow one-on-one and group text messaging with message delivery status (sent, delivered, read).
+- **Multimedia Sharing:** Users should share images, videos, documents, and voice notes.
+- **Push Notifications:** Notify users of new messages when the app is in the background.
+- **Group Management:** Create, join, or leave groups with a limit on participants.
+- **Encryption:** End-to-end encryption for all messages and calls.
+- **Voice and Video Calls:** Peer-to-peer voice and video calling.
 
-*) Scalability: Support millions of concurrent users globally.
-*) Low Latency: Messages and calls should have minimal delay.
-*) High Availability: 99.99% uptime with minimal maintenance windows.
-*) Security: Use end-to-end encryption to ensure user privacy.
-*) Data Durability: Messages must not be lost even during system failures.
-*) Cross-Platform Support: Provide seamless experience on iOS, Android, and Web.
-*) User Experience: Provide a responsive, fast, and user-friendly interface.
+---
 
-3. Consistency / Availability
+## 2. Non-Functional Requirements
 
-*) Availability > Consistency: Focus on high availability using eventual consistency for messages and notifications to ensure the system is always operational.
+- **Scalability:** Support millions of concurrent users globally.
+- **Low Latency:** Messages and calls should have minimal delay.
+- **High Availability:** 99.99% uptime with minimal maintenance windows.
+- **Security:** Use end-to-end encryption to ensure user privacy.
+- **Data Durability:** Messages must not be lost even during system failures.
+- **Cross-Platform Support:** Provide seamless experience on iOS, Android, and Web.
+- **User Experience:** Provide a responsive, fast, and user-friendly interface.
 
-4. APIs
+---
 
-*) User APIs:
-1) /register: Register a user with a phone number.
-2) /login: Authenticate and log in the user.
+## 3. Consistency / Availability
 
-*) Messaging APIs:
-1) /sendMessage: Send a text or multimedia message.
-2) /fetchMessages: Retrieve conversation history.
+- **Availability > Consistency:** Focus on high availability using eventual consistency for messages and notifications to ensure the system is always operational.
 
-*) Call APIs:
-1) /startCall: Initiate a voice or video call.
-2) /endCall: Terminate a call.
+---
 
-*) Group APIs:
-1) /createGroup: Create a new group.
-2) /addMember: Add a user to a group.
+## 4. APIs
 
-5. Architecture
+### User APIs
 
-*) Microservices-Based Architecture: Separate services for user management, messaging, groups, notifications, and calls.
-*) Load Balancer: Distribute incoming traffic across multiple servers.
-*) Event-Driven Communication: Use message queues (e.g., Kafka) for real-time updates and delivery confirmations.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/register` | Register a user with a phone number |
+| `POST` | `/login` | Authenticate and log in the user |
 
-6. Data Flow
+### Messaging APIs
 
-*) User Authentication: The client sends login details; the authentication service verifies them and returns a token.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/sendMessage` | Send a text or multimedia message |
+| `GET` | `/fetchMessages` | Retrieve conversation history |
 
-*) Message Flow:
+### Call APIs
 
-1) Sender sends a message to the server.
-2) The server queues the message and forwards it to the recipient(s) via WebSocket connections.
-3) Media Sharing: Media files are uploaded to a storage server, and links are shared with recipients.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/startCall` | Initiate a voice or video call |
+| `POST` | `/endCall` | Terminate a call |
 
-7. Kind of Data Store
+### Group APIs
 
-*) NoSQL Database: Use Cassandra or DynamoDB for storing messages due to high write throughput and horizontal scalability.
-*) Relational Database: Use MySQL for user profiles and metadata.
-*) Blob Storage: Use Amazon S3 or similar for storing multimedia.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/createGroup` | Create a new group |
+| `POST` | `/addMember` | Add a user to a group |
 
-8. Scaling of DB
+---
 
-*) Horizontal Scaling: Partition user data by user ID or region to scale horizontally.
-*) Replication: Use master-slave replication to ensure data availability and durability.
+## 5. Architecture
 
-9. Caching & Sharding
+### Microservices-Based Architecture
 
-*) Caching: Use Redis or Memcached for storing frequently accessed data like user sessions or recent messages.
-*) Sharding: Implement shard keys based on user IDs to distribute the data across different database nodes.
+Separate services are responsible for:
 
-10. Failure & Fault Tolerance
+- User management
+- Authentication
+- Messaging
+- Groups
+- Notifications
+- Voice and video calls
+- Media processing
 
-*) Replication: Data replication ensures no single point of failure.
-*) Fallback Mechanism: Retry failed requests to another server in case of node failure.
-*) Circuit Breakers: Prevent cascading failures by using circuit breakers in microservices.
+### Load Balancer
 
-11. Logging & Security
+Distributes incoming traffic across multiple application servers to provide:
 
-*) Logging: Use centralized logging systems like ELK Stack for monitoring and debugging.
+- High availability
+- Horizontal scalability
+- Load distribution
+- Failure recovery
 
-*) Security:
-1) Encrypt all data at rest and in transit.
-2) Secure APIs with OAuth2.0 and HTTPS.
-3) Regular audits and penetration tests for vulnerabilities.
+### Event-Driven Communication
+
+Use a distributed message broker such as **Kafka** for:
+
+- Real-time events
+- Message delivery
+- Delivery confirmations
+- Read receipts
+- Push notification events
+- Call signaling
+- User presence
+
+---
+
+## 6. Data Flow
+
+### User Authentication
+
+```text
+Client
+   |
+   | Phone Number / OTP
+   v
+API Gateway
+   |
+   v
+Authentication Service
+   |
+   | Verify User
+   v
+User Database
+   |
+   | JWT / Session Token
+   v
+Client
+```
+
+### Message Flow
+
+```text
+Sender
+   |
+   | Send Message
+   v
+API Gateway
+   |
+   v
+Messaging Service
+   |
+   v
+Kafka / Message Queue
+   |
+   +--------------------+
+   |                    |
+   v                    v
+Message Database     Notification Service
+   |                    |
+   |                    v
+   |                Push Notification
+   |
+   v
+WebSocket Gateway
+   |
+   v
+Recipient
+```
+
+### Delivery Status
+
+```text
+Sender
+  |
+  | Message Sent
+  v
+Server
+  |
+  | ✓ Sent
+  v
+Recipient Device
+  |
+  | ✓ Delivered
+  v
+Recipient Opens Message
+  |
+  | ✓ Read
+  v
+Sender
+```
+
+### Media Sharing Flow
+
+```text
+Sender
+   |
+   | Upload Image / Video / Document
+   v
+Media Service
+   |
+   v
+Object Storage
+(Amazon S3)
+   |
+   | Generate Secure URL
+   v
+Messaging Service
+   |
+   v
+Recipient
+   |
+   | Download Media
+   v
+Object Storage
+```
+
+---
+
+## 7. Kind of Data Store
+
+### NoSQL Database
+
+Use **Cassandra / DynamoDB** for message storage because of:
+
+- High write throughput
+- Horizontal scalability
+- Large-scale distributed storage
+- Partition-based access
+- High availability
+
+### Relational Database
+
+Use **MySQL / PostgreSQL** for:
+
+- User profiles
+- Authentication metadata
+- Group metadata
+- User settings
+- Administrative data
+
+### Blob Storage
+
+Use **Amazon S3 / GCS / Azure Blob Storage** for:
+
+- Images
+- Videos
+- Documents
+- Voice notes
+- Other large multimedia files
+
+---
+
+## 8. Scaling of DB
+
+### Horizontal Scaling
+
+Partition data using:
+
+```text
+User ID
+   |
+   +----> Shard 1
+   |
+   +----> Shard 2
+   |
+   +----> Shard 3
+   |
+   +----> Shard N
+```
+
+This allows additional database nodes to be added as traffic increases.
+
+### Replication
+
+Use replication to provide:
+
+- Data durability
+- High availability
+- Disaster recovery
+- Failover capability
+
+For relational databases, read replicas can be used to scale read-heavy workloads.
+
+---
+
+## 9. Caching & Sharding
+
+### Caching
+
+Use **Redis / Memcached** for frequently accessed information:
+
+- User sessions
+- Recent messages
+- User presence
+- Group information
+- Frequently accessed metadata
+
+Example:
+
+```text
+Client
+  |
+  v
+API Gateway
+  |
+  v
+Redis Cache
+  |
+  +---- Cache Hit ----> Response
+  |
+  +---- Cache Miss
+             |
+             v
+          Database
+```
+
+### Sharding
+
+Use shard keys such as:
+
+```text
+userId
+conversationId
+region
+```
+
+This distributes traffic across multiple database nodes.
+
+---
+
+## 10. Failure & Fault Tolerance
+
+### Replication
+
+Replicate critical data across multiple nodes and potentially multiple regions.
+
+### Fallback Mechanism
+
+If a server fails:
+
+```text
+Request
+   |
+   v
+Server A
+   |
+   X Failure
+   |
+   v
+Server B
+   |
+   v
+Success
+```
+
+### Retry Mechanism
+
+Transient failures should trigger controlled retries with exponential backoff.
+
+### Circuit Breakers
+
+Circuit breakers prevent cascading failures between microservices.
+
+```text
+Service A
+   |
+   v
+Service B
+   |
+   X
+Repeated Failure
+   |
+   v
+Circuit OPEN
+   |
+   v
+Fast Failure / Fallback
+```
+
+### Additional Fault-Tolerance Techniques
+
+- Health checks
+- Automatic failover
+- Multi-region replication
+- Graceful degradation
+- Dead-letter queues
+- Idempotent APIs
+- Timeouts
+- Rate limiting
+
+---
+
+## 11. Logging & Security
+
+### Logging
+
+Use centralized logging such as the **ELK Stack**:
+
+```text
+Services
+   |
+   v
+Log Collectors
+   |
+   v
+Elasticsearch
+   |
+   v
+Kibana
+```
+
+Monitor:
+
+- Request latency
+- Error rates
+- Message delivery
+- Database performance
+- Service health
+- Traffic patterns
+- Authentication failures
+
+### Security
+
+- Encrypt data at rest.
+- Encrypt data in transit using HTTPS/TLS.
+- Use end-to-end encryption for messages and calls.
+- Secure APIs using OAuth 2.0 / secure authentication mechanisms.
+- Use short-lived access tokens and refresh tokens.
+- Apply rate limiting.
+- Protect against DDoS attacks.
+- Perform regular security audits.
+- Perform penetration testing.
+- Use secure media URLs.
+- Never expose private encryption keys to backend services.
+
+---
+
+# Complete High-Level Architecture
+
+```text
+                         ┌──────────────────────────┐
+                         │       CLIENT APPS        │
+                         │                          │
+                         │ Android │ iOS │ Web      │
+                         └────────────┬─────────────┘
+                                      │
+                              HTTPS / WebSocket
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │       INTERNET           │
+                         └────────────┬─────────────┘
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │     LOAD BALANCER        │
+                         │       DNS / GSLB          │
+                         └────────────┬─────────────┘
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │       API GATEWAY        │
+                         │                          │
+                         │ Auth │ Rate Limit │ TLS  │
+                         │ Routing │ Monitoring     │
+                         └────────────┬─────────────┘
+                                      │
+                 ┌────────────────────┼────────────────────┐
+                 │                    │                    │
+                 ▼                    ▼                    ▼
+        ┌────────────────┐   ┌────────────────┐   ┌────────────────┐
+        │  USER SERVICE  │   │ MESSAGE SERVICE│   │ GROUP SERVICE  │
+        └───────┬────────┘   └───────┬────────┘   └───────┬────────┘
+                │                    │                    │
+                └────────────────────┼────────────────────┘
+                                     │
+                                     ▼
+                         ┌──────────────────────────┐
+                         │      KAFKA / QUEUE       │
+                         │                          │
+                         │ Messages │ Events        │
+                         │ Delivery │ Notifications │
+                         │ Presence │ Call Signaling│
+                         └────────────┬─────────────┘
+                                      │
+                  ┌───────────────────┼───────────────────┐
+                  │                   │                   │
+                  ▼                   ▼                   ▼
+        ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
+        │ Notification   │  │  Call Service  │  │ Media Service  │
+        │    Service     │  │                │  │                │
+        └────────────────┘  └────────────────┘  └───────┬────────┘
+                                                         │
+                                                         ▼
+                                               ┌──────────────────┐
+                                               │   BLOB STORAGE   │
+                                               │      S3 / GCS    │
+                                               └──────────────────┘
+
+
+              ┌─────────────────────────────────────────────┐
+              │              DATA STORAGE LAYER              │
+              │                                             │
+              │  MySQL/PostgreSQL → Users / Metadata       │
+              │                                             │
+              │  Cassandra/DynamoDB → Messages              │
+              │                                             │
+              │  Redis → Cache / Presence / Sessions        │
+              │                                             │
+              │  S3 → Images / Videos / Documents          │
+              └─────────────────────────────────────────────┘
+```
+
+## Key Design Principles
+
+- **Event-driven microservices architecture**
+- **WebSocket-based real-time messaging**
+- **Kafka for asynchronous event processing**
+- **Cassandra/DynamoDB for massive message workloads**
+- **MySQL/PostgreSQL for relational metadata**
+- **Redis for low-latency caching and presence**
+- **Object storage for multimedia**
+- **Horizontal scaling and sharding**
+- **Multi-region replication**
+- **End-to-end encryption**
+- **99.99% availability target**
+- **Fault isolation using retries, timeouts and circuit breakers**
+- **Centralized logging and monitoring**
+- **Cross-platform support for Android, iOS and Web**
+
+---
+
+## Final Message Flow
+
+```text
+                         WHATSAPP MESSAGE FLOW
+
+Sender
+  │
+  │ 1. Send Message
+  ▼
+API Gateway
+  │
+  │ 2. Authenticate + Route
+  ▼
+Messaging Service
+  │
+  │ 3. Persist / Queue
+  ▼
+Kafka
+  │
+  ├──────────────► Cassandra / DynamoDB
+  │
+  ├──────────────► Notification Service
+  │
+  └──────────────► WebSocket Gateway
+                         │
+                         │ 4. Deliver
+                         ▼
+                     Recipient
+                         │
+                         │ 5. Read
+                         ▼
+                    Read Receipt
+                         │
+                         ▼
+                       Kafka
+                         │
+                         ▼
+                       Sender
+```
