@@ -82,7 +82,7 @@ mindmap
 
 ---
 
-## 📚 The 10 Systems
+## 📚 The 10 Systems !
 
 | # | System | The Hard Problem | Spotlight Concepts | Folder |
 |:-:|:--|:--|:--|:--|
