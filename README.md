@@ -151,7 +151,7 @@ sequenceDiagram
 
 **Decision to notice:** persist *before* acknowledging, so a crash never silently drops a message.
 
-### 🚕 Uber: finding the nearest driver
+### 🚕 Uber : finding the nearest driver
 
 ```mermaid
 flowchart LR
