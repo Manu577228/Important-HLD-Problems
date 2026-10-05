@@ -1,5 +1,6 @@
-Design Dream11 ::
+![Dream11 Backend HLD](https://i.postimg.cc/9MH3SdvX/Dream11-Backend-System-Architecture.png)
 
+```text
 /* -------------------------------------------------------- */
 /*   ( The Authentic JS CodeBuff )
  ___ _                      _              _ 
@@ -12,140 +13,1197 @@ Design Dream11 ::
 /*    Youtube: https://youtube.com/@code-with-Bharadwaj        */
 /*    Github : https://github.com/Manu577228                  */
 /* ----------------------------------------------------------- */
+```
 
-1. Functional Requirements
+# Design Dream11
 
-*) User Authentication and Profile:
-Users must register/login to create and manage their fantasy team profiles.
+## 1. Functional Requirements
 
-*) Create and Join Contests:
-Users can create custom contests or join pre-existing ones.
+### User Authentication and Profile
 
-*) Team Formation:
-Allow users to create fantasy teams by selecting players under a virtual budget.
+Users must register and log in to create and manage their fantasy team profiles.
 
-*) Live Match Updates:
-Provide real-time updates on player performances and match scores.
+Users can maintain:
 
-*) Leaderboard and Rankings:
-Display rankings based on fantasy team performance in contests.
+- Personal profile
+- Authentication details
+- Fantasy teams
+- Contest participation
+- Wallet and transaction history
 
-*) Prize Distribution:
-Automate the calculation and distribution of prizes to winners after the contest ends.
+### Create and Join Contests
 
-2. Non-Functional Requirements
+Users should be able to:
 
-*) Scalability:
-Handle millions of concurrent users, especially during popular matches.
+- Create custom contests
+- Join pre-existing contests
+- View contest details
+- View entry fees
+- View prize pools
+- View contest rules
+- Track contest status
 
-*) Low Latency:
-Provide real-time updates with minimal delay.
+### Team Formation
 
-*) High Availability:
-Ensure the platform is operational during critical match timings.
+Users can create fantasy teams by selecting players under a predefined virtual budget.
 
-*) Security:
-Safeguard user data and transactions using encryption and secure payment gateways.
+The team creation system should validate:
 
-*) Data Accuracy:
-Ensure real-time data integrity for match updates and fantasy points calculation.
+- Total budget
+- Number of players
+- Player categories
+- Team composition
+- Captain selection
+- Vice-captain selection
+- Contest-specific rules
 
-*) Compliance:
-Adhere to legal and regulatory requirements for skill-based gaming in different regions.
+### Live Match Updates
 
-3. Consistency / Availability
+Provide real-time updates for:
 
-*) Availability > Consistency:
-Ensure availability during high traffic events with eventual consistency for real-time updates and rankings.
+- Match score
+- Player performance
+- Runs
+- Wickets
+- Catches
+- Assists
+- Goals
+- Other sport-specific events
 
-4. APIs
+The scoring engine converts these events into fantasy points.
 
-*) User APIs:
-1) /register: Register a new user.
-2) /login: Authenticate users.
+### Leaderboard and Rankings
 
-*) Contest APIs:
-1) /createContest: Create a new contest.
-2) /joinContest: Join an existing contest.
+Display rankings based on fantasy team performance.
 
-*) Team APIs:
+Leaderboards should support:
 
-1) /createTeam: Create a fantasy team.
-2) /editTeam: Edit an existing team.
+- Real-time ranking updates
+- Player fantasy points
+- Team score
+- Rank changes
+- Contest standings
+- Final rankings
 
-*) Live Update APIs:
-1) /getLiveScores: Fetch real-time player and match stats.
-2) /getLeaderboard: Fetch live contest rankings.
+### Prize Distribution
 
-5. Architecture
+After a contest ends:
 
-*) Microservices Architecture:
-Separate services for user management, contests, scoring, and payments.
+1. Determine final rankings.
+2. Calculate winners.
+3. Calculate prize amounts.
+4. Process payouts.
+5. Update wallet balances.
+6. Store transaction history.
 
-*) Event-Driven Architecture:
-Use message queues (e.g., Kafka) for handling live updates and scoring asynchronously.
+---
 
-*) Load Balancer:
-Distribute incoming requests across multiple servers.
+## 2. Non-Functional Requirements
 
-6. Data Flow
+- **Scalability:** Handle millions of concurrent users, especially during popular matches.
+- **Low Latency:** Provide real-time updates with minimal delay.
+- **High Availability:** Ensure the platform remains operational during critical match timings.
+- **Security:** Safeguard user data and transactions using encryption and secure payment gateways.
+- **Data Accuracy:** Ensure real-time data integrity for match updates and fantasy-point calculations.
+- **Compliance:** Adhere to legal and regulatory requirements for skill-based gaming in different regions.
+- **Reliability:** Ensure scoring, rankings, contests and payments remain reliable during traffic spikes.
+- **User Experience:** Provide a responsive interface with real-time updates.
 
-*) User Interaction:
-Users log in and access contests or create fantasy teams.
+---
 
-*) Match Updates:
-Real-time match data is ingested from third-party providers and processed by the scoring service.
+## 3. Consistency / Availability
 
-*) Leaderboards and Rankings:
-User scores are updated in near real-time and rankings are recalculated.
+### Availability > Consistency
 
-*) Prize Distribution:
-After the contest ends, calculate winners and process prize payouts.
+The platform should prioritize availability during high-traffic sporting events.
 
-7. Kind of Data Store
+Eventual consistency can be used for:
 
-*) Relational Database (e.g., MySQL/PostgreSQL):
-Store user profiles, contest details, and transactions.
+- Live scores
+- Player statistics
+- Fantasy points
+- Leaderboards
+- Notifications
+- Non-critical analytics
 
-*) NoSQL Database (e.g., MongoDB/DynamoDB):
-Store live match stats and scoring data for quick access.
+Strong consistency should be used for critical operations such as:
 
-*) Blob Storage (e.g., Amazon S3):
-Store player images, contest banners, and other media.
+- Contest entry
+- Wallet transactions
+- Prize distribution
+- Payment transactions
+- Team locking
+- Contest finalization
 
-8. Scaling of DB
+The system must ensure that a user cannot:
 
-*) Horizontal Scaling:
-Partition contests or teams by contest ID or user ID to distribute the load.
+- Join a closed contest
+- Edit a locked team
+- Receive duplicate payouts
+- Spend the same wallet balance twice
 
-*) Replication:
-Use read replicas to handle high query traffic for leaderboard and stats access.
+---
 
-9. Caching & Sharding
+# 4. APIs
 
-*) Caching:
-Use Redis or Memcached to cache frequently accessed data like live scores and rankings.
+## User APIs
 
-*) Sharding:
-Use shard keys like contest IDs or user IDs to distribute data across database nodes.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/register` | Register a new user |
+| `POST` | `/login` | Authenticate users |
 
-10. Failure & Fault Tolerance
+## Contest APIs
 
-*) Replication:
-Ensure data replication across multiple nodes to avoid single points of failure.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/createContest` | Create a new contest |
+| `POST` | `/joinContest` | Join an existing contest |
 
-*) Fallback Mechanisms:
-Serve cached scores and rankings during database outages.
+## Team APIs
 
-*) Circuit Breakers:
-Prevent cascading failures in microservices during high traffic.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/createTeam` | Create a fantasy team |
+| `PUT` | `/editTeam` | Edit an existing fantasy team |
 
-11. Logging & Security
+## Live Update APIs
 
-*) Logging:
-Use centralized logging systems like ELK Stack for debugging and monitoring.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/getLiveScores` | Fetch real-time player and match statistics |
+| `GET` | `/getLeaderboard` | Fetch live contest rankings |
 
-*) Security:
-1) Encrypt sensitive user data at rest and in transit.
-2) Secure APIs with OAuth2.0 and HTTPS.
-3) Use fraud detection systems to monitor contest abuse or cheating.
+---
+
+# 5. Architecture
+
+## Microservices Architecture
+
+Separate services handle different responsibilities:
+
+```text
+                         ┌──────────────────────────┐
+                         │        CLIENTS           │
+                         │                          │
+                         │ Mobile │ Web │ Admin     │
+                         └────────────┬─────────────┘
+                                      │
+                               HTTPS / WebSocket
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │      LOAD BALANCER       │
+                         │       DNS / GSLB         │
+                         └────────────┬─────────────┘
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │       API GATEWAY        │
+                         │                          │
+                         │ Auth │ Rate Limit │ TLS  │
+                         │ Routing │ Monitoring     │
+                         └────────────┬─────────────┘
+                                      │
+          ┌───────────────┬───────────┼───────────┬───────────────┐
+          │               │           │           │               │
+          ▼               ▼           ▼           ▼               ▼
+    User Service    Contest Svc  Team Service  Scoring Svc  Payment Service
+          │               │           │           │               │
+          └───────────────┴───────────┼───────────┴───────────────┘
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │      Kafka / Queue       │
+                         │                          │
+                         │ Match Events             │
+                         │ Player Events            │
+                         │ Score Updates            │
+                         │ Contest Events           │
+                         │ Payment Events           │
+                         └────────────┬─────────────┘
+                                      │
+                    ┌─────────────────┼──────────────────┐
+                    │                 │                  │
+                    ▼                 ▼                  ▼
+              ┌──────────┐      ┌────────────┐    ┌──────────────┐
+              │  Redis   │      │ SQL DB     │    │ NoSQL DB     │
+              │  Cache   │      │ MySQL/PG   │    │ Mongo/Dynamo │
+              └──────────┘      └────────────┘    └──────────────┘
+```
+
+### Core Services
+
+#### User Service
+
+Responsible for:
+
+- Registration
+- Login
+- User profiles
+- Authentication
+- KYC/profile metadata
+
+#### Contest Service
+
+Responsible for:
+
+- Contest creation
+- Contest discovery
+- Contest joining
+- Entry validation
+- Contest lifecycle
+
+#### Team Service
+
+Responsible for:
+
+- Team creation
+- Team editing
+- Player selection
+- Budget validation
+- Captain selection
+- Vice-captain selection
+- Team locking
+
+#### Scoring Service
+
+Responsible for:
+
+- Consuming live match events
+- Calculating fantasy points
+- Updating player scores
+- Updating team scores
+- Publishing score events
+
+#### Payment Service
+
+Responsible for:
+
+- Deposits
+- Contest entry payments
+- Wallet transactions
+- Prize payouts
+- Transaction history
+
+#### Notification Service
+
+Responsible for:
+
+- Push notifications
+- SMS
+- Email
+- Contest reminders
+- Match updates
+- Prize notifications
+
+---
+
+## Event-Driven Architecture
+
+Use **Kafka / RabbitMQ** for asynchronous processing.
+
+Events can include:
+
+```text
+MATCH_STARTED
+PLAYER_SCORE_UPDATED
+PLAYER_WICKET
+PLAYER_ASSIST
+PLAYER_GOAL
+FANTASY_POINTS_UPDATED
+CONTEST_JOINED
+TEAM_LOCKED
+LEADERBOARD_UPDATED
+CONTEST_COMPLETED
+PRIZE_CALCULATED
+PAYMENT_COMPLETED
+```
+
+This decouples high-volume match events from user-facing services.
+
+---
+
+# 6. Data Flow
+
+## User Interaction
+
+```text
+User
+ │
+ │ Login
+ ▼
+API Gateway
+ │
+ ▼
+User Service
+ │
+ ▼
+User Database
+ │
+ ▼
+Authentication Token
+ │
+ ▼
+User
+```
+
+After authentication, users can:
+
+```text
+                  User
+                   │
+       ┌───────────┼───────────┐
+       │           │           │
+       ▼           ▼           ▼
+   Contests      Teams      Profile
+       │           │
+       ▼           ▼
+    Join/Create  Create/Edit
+```
+
+---
+
+## Contest Creation and Joining
+
+```text
+                         CONTEST FLOW
+
+User
+ │
+ │ Create / Join Contest
+ ▼
+API Gateway
+ │
+ ▼
+Contest Service
+ │
+ ├── Validate Contest
+ │
+ ├── Check Entry Fee
+ │
+ ├── Check Contest Capacity
+ │
+ └── Validate User
+ │
+ ▼
+Payment / Wallet Service
+ │
+ ▼
+Contest Database
+ │
+ ▼
+Contest Joined
+```
+
+### Contest State
+
+```text
+UPCOMING
+    │
+    ▼
+OPEN
+    │
+    ▼
+FULL / LOCKED
+    │
+    ▼
+LIVE
+    │
+    ▼
+COMPLETED
+    │
+    ▼
+PRIZE DISTRIBUTED
+```
+
+---
+
+## Team Formation
+
+```text
+User
+ │
+ │ Select Players
+ ▼
+Team Service
+ │
+ ├── Validate Player Count
+ ├── Validate Budget
+ ├── Validate Player Categories
+ ├── Validate Team Rules
+ ├── Validate Captain
+ └── Validate Vice-Captain
+ │
+ ▼
+Save Team
+ │
+ ▼
+Team Locked Before Match
+```
+
+Example:
+
+```text
+Virtual Budget
+      │
+      ▼
+Player Selection
+      │
+      ├── Player 1
+      ├── Player 2
+      ├── Player 3
+      ├── Player 4
+      └── ...
+      │
+      ▼
+Team Validation
+      │
+      ▼
+Fantasy Team
+```
+
+---
+
+# Live Match Data Flow
+
+Live match data comes from external sports-data providers.
+
+```text
+                 EXTERNAL SPORTS DATA PROVIDER
+                            │
+                            │ Live Match Events
+                            ▼
+                    ┌───────────────┐
+                    │ Ingestion Svc │
+                    └───────┬───────┘
+                            │
+                            ▼
+                    ┌───────────────┐
+                    │ Kafka / Queue  │
+                    └───────┬───────┘
+                            │
+                            ▼
+                    ┌───────────────┐
+                    │ Scoring Svc   │
+                    └───────┬───────┘
+                            │
+                  ┌─────────┼─────────┐
+                  │         │         │
+                  ▼         ▼         ▼
+             Player DB   Redis    Team Scores
+                  │         │         │
+                  └─────────┼─────────┘
+                            │
+                            ▼
+                    Leaderboard Service
+                            │
+                            ▼
+                       User Clients
+```
+
+---
+
+# Fantasy Point Calculation
+
+```text
+Match Event
+    │
+    ├── Runs
+    ├── Wicket
+    ├── Catch
+    ├── Assist
+    ├── Goal
+    └── Other Event
+    │
+    ▼
+Scoring Engine
+    │
+    ▼
+Fantasy Points
+    │
+    ▼
+Player Score
+    │
+    ▼
+Fantasy Team Score
+    │
+    ▼
+Leaderboard
+```
+
+### Scoring Example
+
+```text
+Player Performance
+        │
+        ▼
++---------------------+
+| Match Event          |
++---------------------+
+        │
+        ▼
++---------------------+
+| Scoring Rules Engine |
++---------------------+
+        │
+        ▼
++---------------------+
+| Fantasy Points       |
++---------------------+
+        │
+        ▼
++---------------------+
+| Team Total           |
++---------------------+
+```
+
+The scoring engine should be deterministic and versioned so that the same match event always produces the correct fantasy points.
+
+---
+
+# Leaderboard and Rankings
+
+```text
+Match Event
+    │
+    ▼
+Scoring Service
+    │
+    ▼
+Team Score Updated
+    │
+    ▼
+Leaderboard Service
+    │
+    ▼
+Redis Sorted Set
+    │
+    ▼
+Top Rankings
+    │
+    ▼
+WebSocket
+    │
+    ▼
+User App
+```
+
+Redis Sorted Sets are useful for maintaining ranked scores efficiently.
+
+Example:
+
+```text
+Rank 1 → Team A → 982 Points
+Rank 2 → Team B → 975 Points
+Rank 3 → Team C → 968 Points
+Rank 4 → Team D → 961 Points
+```
+
+---
+
+# Prize Distribution
+
+After the match and contest are completed:
+
+```text
+Match Completed
+       │
+       ▼
+Contest Service
+       │
+       ▼
+Finalize Scores
+       │
+       ▼
+Final Leaderboard
+       │
+       ▼
+Winner Calculation
+       │
+       ▼
+Prize Calculation
+       │
+       ▼
+Payment Service
+       │
+       ▼
+Wallet / Payment Gateway
+       │
+       ▼
+Transaction History
+       │
+       ▼
+Winner Notification
+```
+
+Prize distribution must be idempotent so the same winner cannot receive duplicate payouts.
+
+---
+
+# 7. Kind of Data Store
+
+## Relational Database
+
+Use **MySQL / PostgreSQL** for transactional data:
+
+- User profiles
+- Contest details
+- Team metadata
+- Contest participation
+- Wallet transactions
+- Payment transactions
+- Prize distribution
+- Audit records
+
+## NoSQL Database
+
+Use **MongoDB / DynamoDB** for high-volume operational data:
+
+- Live match statistics
+- Player events
+- Fantasy scoring data
+- Match events
+- High-throughput data
+
+## Redis
+
+Use Redis for:
+
+- Live scores
+- Leaderboards
+- User sessions
+- Active contests
+- Frequently accessed match data
+- Rate limiting
+
+## Blob Storage
+
+Use **Amazon S3 / GCS / Azure Blob Storage** for:
+
+- Player images
+- Contest banners
+- Team images
+- Static media
+- Other large files
+
+---
+
+# 8. Scaling of DB
+
+## Horizontal Scaling
+
+Partition data using:
+
+```text
+contestId
+userId
+matchId
+```
+
+Example:
+
+```text
+                    Global Traffic
+                          │
+             ┌────────────┼────────────┐
+             │            │            │
+             ▼            ▼            ▼
+         Contest A    Contest B    Contest C
+             │            │            │
+             ▼            ▼            ▼
+          Shards        Shards        Shards
+```
+
+## Replication
+
+Use read replicas to handle high query traffic.
+
+```text
+                 Primary DB
+                     │
+          ┌──────────┼──────────┐
+          ▼          ▼          ▼
+       Read 1     Read 2     Read 3
+```
+
+Read replicas can handle:
+
+- Leaderboard reads
+- Contest browsing
+- Player statistics
+- Match information
+
+Write operations remain directed to the primary database where strong consistency is required.
+
+---
+
+# 9. Caching & Sharding
+
+## Caching
+
+Use **Redis / Memcached** for:
+
+- Live scores
+- Leaderboards
+- User sessions
+- Active contests
+- Player statistics
+- Frequently accessed contest data
+
+Example:
+
+```text
+User
+ │
+ ▼
+API Gateway
+ │
+ ▼
+Redis
+ │
+ ├── Cache HIT ───────► Response
+ │
+ └── Cache MISS
+          │
+          ▼
+       Database
+          │
+          ▼
+        Redis
+          │
+          ▼
+       Response
+```
+
+## Leaderboard Caching
+
+Redis Sorted Sets can maintain rankings:
+
+```text
+ZADD leaderboard 982 teamA
+ZADD leaderboard 975 teamB
+ZADD leaderboard 968 teamC
+```
+
+Then retrieve the top teams efficiently.
+
+## Sharding
+
+Shard using:
+
+```text
+contestId
+matchId
+userId
+```
+
+For leaderboard-heavy workloads, partitioning by `contestId` is useful because most leaderboard queries are scoped to a specific contest.
+
+---
+
+# 10. Failure & Fault Tolerance
+
+## Replication
+
+Ensure data is replicated across multiple nodes to avoid single points of failure.
+
+Critical data includes:
+
+- User data
+- Teams
+- Contest participation
+- Wallet transactions
+- Payment records
+- Final rankings
+
+## Fallback Mechanisms
+
+During temporary database outages:
+
+```text
+Request
+   │
+   ▼
+Redis Cache
+   │
+   ├── HIT ───────► Serve Cached Data
+   │
+   └── MISS
+          │
+          ▼
+       Database
+          │
+          X
+       Failure
+          │
+          ▼
+     Replica / Retry
+```
+
+Cached live scores and rankings can continue to serve users during temporary backend failures.
+
+## Circuit Breakers
+
+Prevent cascading failures between services.
+
+```text
+Leaderboard Service
+        │
+        ▼
+Scoring Service
+        │
+        X
+     Failure
+        │
+        ▼
+  Circuit OPEN
+        │
+        ▼
+Fallback / Cached Score
+```
+
+## Additional Fault-Tolerance Techniques
+
+- Health checks
+- Automatic failover
+- Multi-region replication
+- Dead-letter queues
+- Idempotent event processing
+- Request timeouts
+- Retry with exponential backoff
+- Rate limiting
+- Graceful degradation
+- Backpressure
+
+---
+
+# 11. Logging & Security
+
+## Logging
+
+Use centralized logging such as the **ELK Stack**.
+
+```text
+Microservices
+      │
+      ▼
+Log Collectors
+      │
+      ▼
+Elasticsearch
+      │
+      ▼
+Kibana
+```
+
+Monitor:
+
+- Match-event ingestion latency
+- Scoring latency
+- Leaderboard update latency
+- API latency
+- Contest join failures
+- Payment failures
+- Database performance
+- Cache hit ratio
+- Authentication failures
+- Suspicious activity
+
+---
+
+## Security
+
+1. Encrypt sensitive user data at rest.
+2. Encrypt data in transit using HTTPS/TLS.
+3. Secure APIs using OAuth 2.0 and HTTPS.
+4. Use secure payment gateways.
+5. Protect wallet and transaction APIs.
+6. Apply role-based access control.
+7. Implement rate limiting.
+8. Protect APIs against DDoS attacks.
+9. Use fraud detection systems.
+10. Detect duplicate or suspicious contest activity.
+11. Monitor abnormal user behavior.
+12. Maintain immutable transaction/audit logs.
+13. Perform regular vulnerability assessments.
+14. Perform penetration testing.
+15. Follow applicable gaming, KYC and payment regulations.
+
+---
+
+# Complete Dream11 High-Level Architecture
+
+```text
+                              ┌──────────────────────────┐
+                              │        CLIENT APPS       │
+                              │                          │
+                              │ Android │ iOS │ Web      │
+                              └────────────┬─────────────┘
+                                           │
+                                   HTTPS / WebSocket
+                                           │
+                                           ▼
+                              ┌──────────────────────────┐
+                              │      GLOBAL LOAD         │
+                              │        BALANCER          │
+                              │       DNS / GSLB         │
+                              └────────────┬─────────────┘
+                                           │
+                                           ▼
+                              ┌──────────────────────────┐
+                              │       API GATEWAY        │
+                              │                          │
+                              │ Auth │ Rate Limit │ TLS  │
+                              │ Routing │ Monitoring     │
+                              └────────────┬─────────────┘
+                                           │
+            ┌──────────────────────────────┼──────────────────────────────┐
+            │              │               │               │              │
+            ▼              ▼               ▼               ▼              ▼
+     ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
+     │User Service│ │Contest Svc │ │Team Service│ │Scoring Svc │ │Payment Svc │
+     └──────┬─────┘ └─────┬──────┘ └──────┬─────┘ └──────┬─────┘ └──────┬─────┘
+            │             │               │               │              │
+            └─────────────┴───────────────┼───────────────┴──────────────┘
+                                          │
+                                          ▼
+                              ┌──────────────────────────┐
+                              │      KAFKA / EVENT BUS    │
+                              │                          │
+                              │ Match Events             │
+                              │ Player Events            │
+                              │ Score Updates            │
+                              │ Contest Events           │
+                              │ Payment Events            │
+                              └────────────┬─────────────┘
+                                           │
+                         ┌─────────────────┼──────────────────┐
+                         │                 │                  │
+                         ▼                 ▼                  ▼
+                  ┌────────────┐    ┌──────────────┐   ┌──────────────┐
+                  │   Redis    │    │ SQL Database │   │ NoSQL DB     │
+                  │   Cache    │    │ MySQL / PG   │   │ Mongo/Dynamo │
+                  └────────────┘    └──────────────┘   └──────────────┘
+                         │
+                         ▼
+                  ┌──────────────┐
+                  │ Leaderboards │
+                  │ Sorted Sets  │
+                  └──────────────┘
+
+
+              ┌─────────────────────────────────────────────────┐
+              │             EXTERNAL SERVICES                   │
+              │                                                 │
+              │ Sports Data Provider → Live Match Events        │
+              │ Payment Gateway     → Deposits / Payouts        │
+              │ SMS / Email         → Notifications              │
+              │ Identity / KYC      → Verification / Compliance  │
+              └─────────────────────────────────────────────────┘
+```
+
+---
+
+# Complete End-to-End Data Flow
+
+```text
+                         DREAM11 FLOW
+
+User
+ │
+ │ 1. Login
+ ▼
+API Gateway
+ │
+ ▼
+User Service
+ │
+ ▼
+Authentication
+ │
+ ▼
+User Dashboard
+ │
+ ├──────────────────────────────┐
+ │                              │
+ │ 2. Browse Contests           │
+ ▼                              ▼
+Contest Service            Team Service
+ │                              │
+ │ 3. Join Contest              │
+ ▼                              │
+Payment / Wallet                │
+ │                              │
+ ▼                              │
+Contest Joined                  │
+                                │
+                                │ 4. Create Team
+                                ▼
+                         Team Validation
+                                │
+                                ▼
+                           Team Locked
+                                │
+                                │
+                    ┌───────────┘
+                    │
+                    ▼
+            EXTERNAL SPORTS DATA
+                    │
+                    │ 5. Live Match Events
+                    ▼
+             Event Ingestion
+                    │
+                    ▼
+                  Kafka
+                    │
+                    ▼
+             Scoring Service
+                    │
+          ┌─────────┼─────────┐
+          │         │         │
+          ▼         ▼         ▼
+       Player    Team Score  Events
+       Points
+          │         │
+          └─────────┼─────────┘
+                    │
+                    ▼
+             Leaderboard
+                    │
+                    ▼
+                  Redis
+                    │
+                    ▼
+             WebSocket/API
+                    │
+                    ▼
+                 User App
+                    │
+                    │ 6. Match Ends
+                    ▼
+             Contest Service
+                    │
+                    ▼
+            Final Leaderboard
+                    │
+                    ▼
+             Winner Calculation
+                    │
+                    ▼
+             Prize Distribution
+                    │
+                    ▼
+             Payment / Wallet
+                    │
+                    ▼
+             Transaction History
+```
+
+---
+
+# Key Design Principles
+
+- **Microservices-based architecture**
+- **Event-driven match processing**
+- **Kafka for high-throughput match events**
+- **Redis for live scores and leaderboards**
+- **Redis Sorted Sets for ranking**
+- **Relational databases for transactional data**
+- **NoSQL databases for high-volume match events**
+- **WebSockets for real-time updates**
+- **Horizontal database scaling**
+- **Contest-based sharding**
+- **Read replicas for leaderboard reads**
+- **External sports-data integration**
+- **Secure payment gateway integration**
+- **Fraud and abuse detection**
+- **Idempotent prize distribution**
+- **Multi-region replication**
+- **Circuit breakers and retries**
+- **Centralized logging and monitoring**
+- **High availability during peak match traffic**
+- **Strong consistency for money and contest finalization**
+- **Eventual consistency for non-critical live updates**
+
+---
+
+# Most Important Design Decision
+
+The **live scoring and leaderboard path is the critical hot path** during a major match.
+
+Therefore:
+
+```text
+                       LIVE SCORING HOT PATH
+
+External Sports Provider
+          │
+          │ Live Match Event
+          ▼
+   Event Ingestion Service
+          │
+          ▼
+        Kafka
+          │
+          ▼
+    Scoring Service
+          │
+          ├──────────────► Player Points
+          │
+          ▼
+      Team Scores
+          │
+          ▼
+   Leaderboard Service
+          │
+          ▼
+    Redis Sorted Set
+          │
+          ▼
+      WebSocket
+          │
+          ▼
+       User Apps
+```
+
+The scoring pipeline should be **asynchronous, horizontally scalable and idempotent**, while Redis provides low-latency access to live scores and rankings.
+
+---
+
+# Final Architecture Summary
+
+```text
+              ┌──────────────────────────────────────┐
+              │             DREAM11 BACKEND           │
+              └──────────────────┬───────────────────┘
+                                 │
+          ┌──────────────────────┼──────────────────────┐
+          │                      │                      │
+          ▼                      ▼                      ▼
+      User APIs             Contest APIs           Team APIs
+          │                      │                      │
+          └──────────────────────┼──────────────────────┘
+                                 │
+                                 ▼
+                         ┌───────────────┐
+                         │   Kafka       │
+                         │ Event Stream  │
+                         └───────┬───────┘
+                                 │
+                 ┌───────────────┼───────────────┐
+                 │               │               │
+                 ▼               ▼               ▼
+             Scoring        Leaderboard       Payment
+             Service          Service         Service
+                 │               │               │
+                 ▼               ▼               ▼
+              Player          Redis          Transaction
+              Scores         Rankings            DB
+                 │               │               │
+                 └───────────────┼───────────────┘
+                                 │
+                                 ▼
+                           User Clients
+```
